@@ -32,6 +32,7 @@ object MapGroupsWithState {
       ArtistAggregationState(artist, 1L)
 
     // for every rows, let's count by artist the number of broadcast, instead of counting by artist, title and radio
+    //对于每一行,让我们按照艺术家数量来计算广播的数量,而不是按艺术家,标题和广播计算
     for (input <- inputs) {
       state = updateArtistStateWithEvent(state, input)
       oldState.update(state)

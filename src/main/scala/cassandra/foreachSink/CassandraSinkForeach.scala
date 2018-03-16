@@ -8,6 +8,7 @@ import radio.SimpleSongAggregation
   * Inspired by
   * https://github.com/ansrivas/spark-structured-streaming/
   * https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#using-foreach
+  * Foreach输出方式只需要实现ForeachWriter抽象类,并实现三个方法
   */
 class CassandraSinkForeach() extends ForeachWriter[SimpleSongAggregation] {
   private def cqlRadio(record: SimpleSongAggregation): String = s"""
@@ -16,12 +17,14 @@ class CassandraSinkForeach() extends ForeachWriter[SimpleSongAggregation] {
 
   def open(partitionId: Long, version: Long): Boolean = {
     // open connection
+    //打开连接
     //@TODO command to check if cassandra cluster is up
     true
   }
 
   //https://github.com/datastax/spark-cassandra-connector/blob/master/doc/1_connecting.md#connection-pooling
   def process(record: SimpleSongAggregation) = {
+
     println(s"Saving record: $record")
     CassandraDriver.connector.withSessionDo(session =>
       session.execute(cqlRadio(record))
@@ -32,6 +35,7 @@ class CassandraSinkForeach() extends ForeachWriter[SimpleSongAggregation] {
 
   def close(errorOrNull: Throwable): Unit = {
     // close the connection
+    //关闭连接
     //connection.keep_alive_ms	--> 5000ms :	Period of time to keep unused connections open
   }
 }

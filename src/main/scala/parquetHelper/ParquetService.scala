@@ -49,6 +49,7 @@ object ParquetService {
     spark
       .readStream
       .schema(ParquetService.schema)
+      //通过一次选择一个文件将一系列文件视为流
       .option("maxFilesPerTrigger", 1000)  // Treat a sequence of files as a stream by picking one file at a time
       .parquet(pathRadioStationSongs)
       .as[Song]
@@ -62,6 +63,7 @@ object ParquetService {
     spark
       .readStream
       .schema(ParquetService.schema)
+      //通过一次选择一个文件将一系列文件视为流
       .option("maxFilesPerTrigger", 1000)  // Treat a sequence of files as a stream by picking one file at a time
       .parquet(pathRadioES)
       .as[Song]
@@ -71,6 +73,7 @@ object ParquetService {
   }
 
   //Process stream on console to debug only
+  //在控制台上处理流以仅调试
   def debugStream(staticInputDF: DataFrame) = {
     staticInputDF.writeStream
       .format("console")

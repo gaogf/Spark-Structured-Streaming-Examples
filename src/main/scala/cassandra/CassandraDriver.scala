@@ -34,6 +34,7 @@ object CassandraDriver {
 
   /**
     * remove kafka metadata and only focus on business structure
+    * 删除kafka元数据,只关注业务结构
     */
   def getDatasetForCassandra(df: DataFrame) = {
     df.select(KafkaService.radioStructureName + ".*")

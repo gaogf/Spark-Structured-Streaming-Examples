@@ -9,6 +9,7 @@ object CassandraKafkaMetadata {
     """
 
   //https://github.com/datastax/spark-cassandra-connector/blob/master/doc/1_connecting.md#connection-pooling
+  //保存元素数据
   def save(metadata: KafkaMetadata) = {
     CassandraDriver.connector.withSessionDo(session =>
       session.execute(cql(metadata))

@@ -34,6 +34,14 @@ object MainColumnSplit extends InitSpark {
       monDay(columns(0),columns(1),columns(2))
     }
     linesMap.show
+    //第三种 使用元组的方式
+    val linesMapa=data.map { line =>
+      //value以逗号分隔发送的值"userid_1;2015-05-01T00:00:00;some_value"
+      //取出第一列的值(value)
+      val columns = line.getString(1).split("-") // value being sent out as a comma separated value "userid_1;2015-05-01T00:00:00;some_value"
+      (columns(0),columns(1),columns(2))
+    }.toDF(cols: _*)
+    linesMapa.show()
     //pd.show
     /* data.limit(10).foreach(row=>{
       println(row.getString(1).split("-").mkString(","))

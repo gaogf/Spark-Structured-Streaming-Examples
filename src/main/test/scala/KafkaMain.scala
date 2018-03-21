@@ -7,7 +7,7 @@ import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Row, SparkSession}
 
-object KafkaMain {
+object KafkaColumnSplit {
 
   private val logger = Logger.getLogger(this.getClass)
 
@@ -60,7 +60,7 @@ class SparkJob extends Serializable {
       .as[(String, String, Integer)]
 
     val schema=Array("year","month","day")
-    //数据字段的拆分
+    //第一种使用StructType数据字段的拆分
     val pdp=lines.rdd.map(arr=>{
       val p= arr._2.split("-")
       Row.fromSeq(p)
@@ -75,18 +75,18 @@ class SparkJob extends Serializable {
     val columns = line._1.split(";") // value being sent out as a comma separated value "userid_1;2015-05-01T00:00:00;some_value"
     columns
   }.toDF(cols: _*)
-
+    //第二种,使用元组的解决,但最大长度22个字段
     val df =
       lines.map { line =>
         //value以逗号分隔发送的值"userid_1;2015-05-01T00:00:00;some_value"
         //取出第一列的值(value)
         val columns = line._1.split(";") // value being sent out as a comma separated value "userid_1;2015-05-01T00:00:00;some_value"
         //(columns(0), columns(1), columns(2))
-        columns
+        (columns(0), columns(1), columns(2))
       }.toDF(cols: _*)
 
     df.printSchema()
-
+    //第三种方式使用case calss 方式
     // Run your business logic here
     //在这里运行业务逻辑
    // val ds = df.select($"user_id", $"time", $"event").as[Commons.UserEvent]
